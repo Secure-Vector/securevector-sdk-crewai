@@ -8,7 +8,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 - Initial CrewAI adapter (Phase 2 of the SecureVector SDK roadmap, story #174).
 - A tool wrapper (`secure_tools` / `secure_tool`) and a best-effort global
-  monkeypatch (`install`) of CrewAI's `BaseTool.run` that run the three
+  monkeypatch (`install`) of CrewAI's `BaseTool.run` (resolved via the
+  documented `from crewai.tools import BaseTool` import) that run the three
   controls on every tool call:
   - **(a)** tool-call permission resolution (synced → override → essential → default-allow),
   - **(b)** secret / data-leak detection on tool input and output,

@@ -54,16 +54,16 @@ class SecureCrew:
         def secured(*args, **kwargs):
             tool_id = normalize_tool_id(None, name=name)
             req = uuid.uuid4().hex[:16]
-            # on_tool_start runs the three controls; in enforce mode a denial
+            # guard_input runs the three controls; in enforce mode a denial
             # raises ToolBlocked here, before the underlying tool executes.
-            self.interceptor.on_tool_start(
+            self.interceptor.guard_input(
                 tool_id,
                 _to_text({"args": args, "kwargs": kwargs}),
                 session_id=self._session,
                 request_id=req,
             )
             result = original(*args, **kwargs)
-            self.interceptor.on_tool_end(
+            self.interceptor.scan_output(
                 tool_id, _to_text(result), session_id=self._session, request_id=req
             )
             return result
@@ -96,10 +96,11 @@ class SecureCrew:
         """Monkeypatch CrewAI's BaseTool.run so all tools are covered. Returns
         True if the patch was applied."""
         try:
-            from crewai.tools.base_tool import BaseTool  # type: ignore
+            # Documented public import path.
+            from crewai.tools import BaseTool  # type: ignore
         except Exception:
             try:
-                from crewai_tools import BaseTool  # type: ignore
+                from crewai.tools.base_tool import BaseTool  # type: ignore
             except Exception as exc:
                 log.warning("CrewAI BaseTool not importable (%s); use secure_tools() instead", exc)
                 return False
@@ -114,14 +115,14 @@ class SecureCrew:
             name = getattr(self, "name", None) or self.__class__.__name__
             tool_id = normalize_tool_id(None, name=name)
             req = uuid.uuid4().hex[:16]
-            crew.interceptor.on_tool_start(
+            crew.interceptor.guard_input(
                 tool_id,
                 _to_text({"args": args, "kwargs": kwargs}),
                 session_id=crew._session,
                 request_id=req,
             )
             result = original_run(self, *args, **kwargs)
-            crew.interceptor.on_tool_end(
+            crew.interceptor.scan_output(
                 tool_id, _to_text(result), session_id=crew._session, request_id=req
             )
             return result
