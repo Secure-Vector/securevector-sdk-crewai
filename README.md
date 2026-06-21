@@ -1,5 +1,10 @@
 # SecureVector SDK for CrewAI
 
+[![PyPI](https://img.shields.io/pypi/v/securevector-sdk-crewai)](https://pypi.org/project/securevector-sdk-crewai/)
+[![Downloads](https://img.shields.io/pypi/dm/securevector-sdk-crewai)](https://pypistats.org/packages/securevector-sdk-crewai)
+[![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://pypi.org/project/securevector-sdk-crewai/)
+[![License](https://img.shields.io/badge/license-Apache--2.0-green)](LICENSE)
+
 > Bring the SecureVector local threat monitor's three controls — **tool-call
 > permissions**, **secret / data-leak detection**, and **threat detection** —
 > to every CrewAI tool call, with tamper-evident audit logging.
