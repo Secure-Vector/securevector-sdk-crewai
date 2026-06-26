@@ -19,6 +19,23 @@ pip install securevector-sdk-crewai
 > single `pip install`. The SDK is a thin interception layer — **the app must be
 > running locally** (`securevector-app --web`) for it to do anything.
 
+> 🌐 **Pointing at your own cloud? Use the lightweight install.** If you've deployed
+> SecureVector to your own cloud, you don't need the bundled
+> local app. Install **only the adapter** on the machine where your agents run, and
+> point it at your deployment:
+>
+> ```bash
+> # lightweight — adapter only, no local app (your env already has crewai)
+> pip install securevector-sdk-crewai --no-deps
+>
+> # point at your SecureVector endpoint
+> export SECUREVECTOR_SDK_APP_URL=https://<your-securevector-endpoint>
+> export SECUREVECTOR_API_KEY=<token>
+> ```
+> The adapter then forwards every tool call to your remote deployment instead of a
+> local app. The default `pip install securevector-sdk-crewai` (no `--no-deps`)
+> still bundles the app for local use.
+
 ## Quick start
 
 Wrap your tools (recommended — robust across CrewAI versions):
