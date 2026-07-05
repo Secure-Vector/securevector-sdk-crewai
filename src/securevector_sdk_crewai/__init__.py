@@ -19,6 +19,14 @@ controls — tool-call permissions, secret/data-leak detection, threat detection
 — and each decision is written to the app's tamper-evident audit chain with
 ``runtime_kind="crewai"``. Requires the SecureVector app running locally
 (installed automatically as the ``securevector-ai-monitor`` dependency).
+
+``install()`` / ``.auto`` also patch ``Crew.kickoff`` so every run's LLM token
+usage posts to the app's Cost Tracking (dollar cost via the app's pricing
+table). Without the global install, call :func:`track_crew_usage` after
+``kickoff()``::
+
+    result = crew.kickoff()
+    track_crew_usage(crew, agent_id="research-crew")
 """
 
 import logging
@@ -26,6 +34,7 @@ from typing import Any, List, Optional
 
 from ._version import __version__
 from .config import Config
+from .costs import CostTracker, install_kickoff_tracking, track_crew_usage
 from .errors import AppUnreachable, SecureVectorError, ToolBlocked
 from .wrapper import SecureCrew
 
@@ -36,6 +45,7 @@ __all__ = [
     "install",
     "secure_tool",
     "secure_tools",
+    "track_crew_usage",
     "SecureCrew",
     "Config",
     "SecureVectorError",
@@ -73,6 +83,13 @@ def install(
         log.warning(
             "Global CrewAI instrumentation unavailable; wrap tools with "
             "secure_tools([...]) instead."
+        )
+    if register_global and not install_kickoff_tracking(
+        CostTracker(crew.cfg, client=crew.interceptor.client)
+    ):
+        log.debug(
+            "Automatic cost tracking unavailable; call track_crew_usage(crew) "
+            "after kickoff() instead."
         )
     return crew
 
