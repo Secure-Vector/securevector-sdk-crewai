@@ -65,6 +65,23 @@ or fully zero-config:
 import securevector_sdk_crewai.auto   # reads env, installs globally
 ```
 
+**LLM cost tracking** — `install()` / `.auto` also patch `Crew.kickoff` so every
+run's token usage (prompt / completion / cached) posts to the app's **Cost
+Tracking**, where the pricing table turns it into real dollars (your crew runs
+on your own API keys) and per-agent budgets apply. If you only wrap tools with
+`secure_tools()`, post usage explicitly after a run:
+
+```python
+from securevector_sdk_crewai import track_crew_usage
+
+result = crew.kickoff()
+track_crew_usage(crew, agent_id="research-crew")   # agent_id optional
+```
+
+Records are attributed to `agent_id="crewai-agent"` by default — override via
+`track_crew_usage(crew, agent_id=...)` or `SECUREVECTOR_SDK_AGENT_ID`. Cost
+capture is best-effort: an unreachable app never breaks the crew.
+
 ## What happens on every tool call
 
 Before a tool runs, the SDK:
@@ -103,6 +120,7 @@ All optional, via env or kwargs:
 | `SECUREVECTOR_SDK_MODE` | `observe` | `observe` or `enforce` |
 | `SECUREVECTOR_SDK_TIMEOUT_MS` | `3000` | per-call verdict timeout |
 | `SECUREVECTOR_SDK_RISK_THRESHOLD` | `70` | risk score that blocks in enforce mode |
+| `SECUREVECTOR_SDK_AGENT_ID` | `crewai-agent` | agent id shown in Cost Tracking |
 | `SECUREVECTOR_SDK_DISABLED` | _(unset)_ | set truthy to no-op |
 
 ## Compliance

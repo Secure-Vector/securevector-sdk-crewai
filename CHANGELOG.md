@@ -3,6 +3,28 @@
 All notable changes to `securevector-sdk-crewai` are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.1.0]
+
+### Added
+- **LLM cost tracking** (story #185): the SDK now captures crew LLM token usage
+  and posts it to the local app's Cost Tracking (`POST /api/costs/track`), so
+  CrewAI agents appear in the dollar-based cost dashboard alongside proxy
+  agents and respect per-agent budgets.
+  - `install()` / `import securevector_sdk_crewai.auto` additionally patch
+    `Crew.kickoff` so every run posts its `crew.usage_metrics` delta
+    automatically.
+  - `track_crew_usage(crew, agent_id=...)` — explicit capture after
+    `kickoff()` for tool-only (`secure_tools`) integrations.
+  - Provider + model-id normalization mirrors the app's pricing table
+    (`provider/model_id` exact match), including litellm-style
+    `provider/model` strings and versioned-model aliases, so dollar cost
+    resolves instead of landing as `pricing_known=false`.
+  - Attribution: records post as `agent_id` `"crewai-agent"` by default;
+    override via `track_crew_usage(agent_id=...)` or
+    `SECUREVECTOR_SDK_AGENT_ID`.
+  - Best-effort like audit forwarding: an unreachable app or unknown model
+    never breaks the crew.
+
 ## [1.0.0]
 
 ### Added
