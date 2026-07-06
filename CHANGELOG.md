@@ -3,7 +3,7 @@
 All notable changes to `securevector-sdk-crewai` are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
-## [1.1.0]
+## [1.2.0]
 
 ### Added
 - **LLM cost tracking** (story #185): the SDK now captures crew LLM token usage
@@ -24,6 +24,13 @@ This project adheres to [Semantic Versioning](https://semver.org/).
     `SECUREVECTOR_SDK_AGENT_ID`.
   - Best-effort like audit forwarding: an unreachable app or unknown model
     never breaks the crew.
+
+## [1.1.0]
+
+### Added
+- **Unified engine endpoint** (#190): point the SDK at the local app or a
+  self-hosted deployment via `SECUREVECTOR_ENGINE_ENDPOINT`. Legacy
+  `SECUREVECTOR_SDK_APP_URL` continues to work as a fallback.
 
 ## [1.0.0]
 
