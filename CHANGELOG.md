@@ -3,6 +3,16 @@
 All notable changes to `securevector-sdk-crewai` are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.2.1]
+
+### Fixed
+- **crewai cost attribution for provider-prefixed models** (e.g.
+  `ollama/minimax-m2.7:cloud`). crewai's `LLM` stores the bare name in
+  `.model` and the provider separately in `.provider`; `crew_model_id` now
+  re-attaches it, so the pricing key resolves (`ollama/minimax-m2.7:cloud`)
+  instead of collapsing to `unknown/...` and reporting `$0`. langchain /
+  langgraph were unaffected.
+
 ## [1.2.0]
 
 ### Added

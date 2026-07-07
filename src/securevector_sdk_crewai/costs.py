@@ -170,6 +170,15 @@ def crew_model_id(crew: Any) -> str:
         for attr in ("model", "model_name"):
             value = getattr(llm, attr, None)
             if isinstance(value, str) and value.strip():
+                # crewai's ``LLM`` splits a litellm-style spec: it stores the
+                # bare name in ``.model`` ("ollama/minimax-m2.7:cloud" becomes
+                # "minimax-m2.7:cloud") and the provider in ``.provider``.
+                # Re-attach it so pricing keys like "ollama/minimax-m2.7:cloud"
+                # resolve instead of collapsing to an "unknown/..." miss.
+                if "/" not in value:
+                    provider = getattr(llm, "provider", None)
+                    if isinstance(provider, str) and provider.strip():
+                        return f"{provider.strip()}/{value}"
                 return value
     return ""
 
