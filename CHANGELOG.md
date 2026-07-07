@@ -3,7 +3,17 @@
 All notable changes to `securevector-sdk-crewai` are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
-## [1.1.0]
+## [1.2.1]
+
+### Fixed
+- **crewai cost attribution for provider-prefixed models** (e.g.
+  `ollama/minimax-m2.7:cloud`). crewai's `LLM` stores the bare name in
+  `.model` and the provider separately in `.provider`; `crew_model_id` now
+  re-attaches it, so the pricing key resolves (`ollama/minimax-m2.7:cloud`)
+  instead of collapsing to `unknown/...` and reporting `$0`. langchain /
+  langgraph were unaffected.
+
+## [1.2.0]
 
 ### Added
 - **LLM cost tracking** (story #185): the SDK now captures crew LLM token usage
@@ -24,6 +34,13 @@ This project adheres to [Semantic Versioning](https://semver.org/).
     `SECUREVECTOR_SDK_AGENT_ID`.
   - Best-effort like audit forwarding: an unreachable app or unknown model
     never breaks the crew.
+
+## [1.1.0]
+
+### Added
+- **Unified engine endpoint** (#190): point the SDK at the local app or a
+  self-hosted deployment via `SECUREVECTOR_ENGINE_ENDPOINT`. Legacy
+  `SECUREVECTOR_SDK_APP_URL` continues to work as a fallback.
 
 ## [1.0.0]
 

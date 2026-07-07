@@ -8,7 +8,7 @@ build-backend = "setuptools.build_meta"
 # `crewai-*` prefix that could imply an official CrewAI integration. See README
 # "Trademarks".
 name = "securevector-sdk-crewai"
-version = "1.1.0"
+version = "1.2.1"
 description = "SecureVector SDK for CrewAI — brings the local threat monitor's three controls (tool-call permissions, secret/data-leak detection, threat detection) to every CrewAI tool call, with tamper-evident audit logging."
 readme = "README.md"
 requires-python = ">=3.10"

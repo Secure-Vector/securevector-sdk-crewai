@@ -22,8 +22,11 @@ class FakeMetrics:
 
 
 class FakeLLM:
-    def __init__(self, model):
+    def __init__(self, model, provider=None):
         self.model = model
+        # crewai's real LLM strips the provider prefix into a separate attr.
+        if provider is not None:
+            self.provider = provider
 
 
 class FakeAgent:
@@ -125,6 +128,23 @@ def test_crew_model_id_reads_first_agent_llm():
     crew.agents = [FakeAgent("gpt-4o-mini")]
     assert crew_model_id(crew) == "gpt-4o-mini"
     assert crew_model_id(FakeCrew(model=None)) == ""
+
+
+def test_crew_model_id_reattaches_provider_stripped_by_crewai_llm():
+    # crewai's LLM(model="ollama/minimax-m2.7:cloud") stores the bare name in
+    # .model and the provider in .provider. crew_model_id must re-attach it, or
+    # the pricing key collapses to "unknown/..." and dollar cost never resolves.
+    crew = FakeCrew(model=None)
+    crew.agents = [FakeAgent(FakeLLM("minimax-m2.7:cloud", provider="ollama"))]
+    assert crew_model_id(crew) == "ollama/minimax-m2.7:cloud"
+
+    # An already-prefixed model string is left untouched (no double prefix).
+    crew.agents = [FakeAgent(FakeLLM("ollama/llama3", provider="ollama"))]
+    assert crew_model_id(crew) == "ollama/llama3"
+
+    # No provider attr → unchanged (back-compat with plain LLM stubs).
+    crew.agents = [FakeAgent(FakeLLM("gpt-4o"))]
+    assert crew_model_id(crew) == "gpt-4o"
 
 
 # --------------------------------------------------------------------- #
