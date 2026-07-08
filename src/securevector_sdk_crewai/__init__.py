@@ -37,6 +37,7 @@ from .config import Config
 from .costs import CostTracker, install_kickoff_tracking, track_crew_usage
 from .errors import AppUnreachable, SecureVectorError, ToolBlocked
 from .wrapper import SecureCrew
+from .tool_id import candidate_tool_ids
 
 log = logging.getLogger("securevector_sdk_crewai")
 
@@ -48,6 +49,7 @@ __all__ = [
     "track_crew_usage",
     "SecureCrew",
     "Config",
+    "candidate_tool_ids",
     "SecureVectorError",
     "ToolBlocked",
     "AppUnreachable",
